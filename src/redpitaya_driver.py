@@ -2,7 +2,7 @@ import csv
 import sys
 import time
 import numpy as np
-import redpitaya_scpi as scpi
+import src.redpitaya_scpi as scpi
 import matplotlib.pyplot as plt
 import pandas as pd
 
