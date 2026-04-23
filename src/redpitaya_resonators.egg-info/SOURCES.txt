@@ -1,0 +1,7 @@
+LICENSE
+README.md
+setup.py
+src/redpitaya_resonators.egg-info/PKG-INFO
+src/redpitaya_resonators.egg-info/SOURCES.txt
+src/redpitaya_resonators.egg-info/dependency_links.txt
+src/redpitaya_resonators.egg-info/top_level.txt
