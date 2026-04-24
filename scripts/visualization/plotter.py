@@ -5,7 +5,7 @@ import h5py
 import os
 import time
 
-fig, ax = plt.subplots(2)
+fig, ax = plt.subplots(2, 1)
 filename = '../../data/test.h5'
 moddate = None
 
@@ -17,8 +17,11 @@ def read_h5(retries=5, delay=0.2):
                 if len(keys) == 0:
                     return None, None, None
                 frequencies = sorted([float(key.replace("freq_", "").replace("Hz", "")) for key in keys])
-                i_all = np.array([np.sqrt(np.mean(f[f"freq_{freq}Hz"]["channel1"][:]**2)) for freq in frequencies])
-                q_all = np.array([np.sqrt(np.mean(f[f"freq_{freq}Hz"]["channel2"][:]**2)) for freq in frequencies])
+                channel1 = [f[f"freq_{freq}Hz"]["channel1"][:] for freq in frequencies]
+                channel2 = [f[f"freq_{freq}Hz"]["channel2"][:] for freq in frequencies]
+                i_all = np.array([np.max(np.abs(np.fft.rfft(ch))) for ch in channel1])
+                q_all = np.array([np.max(np.abs(np.fft.rfft(ch))) for ch in channel2])
+
                 return frequencies, i_all, q_all
         except OSError:
             print(f"File busy, retrying ({attempt+1}/{retries})...")
@@ -31,19 +34,21 @@ def plot_data():
         print("Could not read file, skipping frame")
         return
 
+    print(i_all, q_all)
     freq  = np.array(frequencies)
     power = (i_all**2 + q_all**2)/ 50
-    mag   = 10 * np.log10(power / 0.001)
+    #mag   = 10 * np.log10(power / 0.001)
+    mag = i_all
     phase = np.arctan2(q_all, i_all)
 
-    ax[0].clear()
+    #ax[0].clear()
     ax[0].scatter(freq, mag, c='black', marker='s', s=20, label='Magnitude')
     ax[0].legend()
     ax[0].set_xlabel('Frequency [Hz]')
     ax[0].set_ylabel('Mag [dBm]')
     ax[0].grid()
 
-    ax[1].clear()
+    #ax[1].clear()
     ax[1].scatter(freq, phase, c='black', marker='s', s=20, label='Phase')
     ax[1].legend()
     ax[1].set_xlabel('Frequency [Hz]')
