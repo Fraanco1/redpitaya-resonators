@@ -65,9 +65,9 @@ class RedPitaya():
         # read both channels
         self.rp.tx_txt('ACQ:SOUR1:DATA?')
         raw1 = self.rp.rx_txt().strip('{}\n\r').replace(' ', '').split(',')
-        ch1  = list(map(float, raw1))
+        ch1  = list(raw1)
 
         self.rp.tx_txt('ACQ:SOUR2:DATA?')
         raw2 = self.rp.rx_txt().strip('{}\n\r').replace(' ', '').split(',')
-        ch2  = list(map(float, raw2))
+        ch2  = list(raw2)
         return ch1, ch2
